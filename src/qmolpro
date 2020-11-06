@@ -1,0 +1,46 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo
+  echo "Submit molpro job to the queue"
+  echo ""
+  echo "Usage: `basename $0` <molpro input> [--mv YY] [--mppx] [sbatch options]"
+  echo
+  echo "  --mppx: run Molpro in parallel task mode (e.g., for numerical Hessians)"
+  echo "  --mv YY: select a specific version: 20YY"
+  echo
+  exit
+fi
+
+inp=$1
+shift
+
+vers=""
+opts=("--mppx" "--mv")
+extra_opts='--launcher "mpiexec.hydra -np \$SLURM_CPUS_PER_TASK molpro.exe"'
+
+for i in ${opts[@]}; do
+  if [ "x$1" == "x--mppx" ]; then
+    extra_opts="--mppx $extra_opts"
+    shift
+  fi
+  if [ "x$1" == "x--mv" ]; then
+    vers="$2"
+    shift 2
+  fi
+done
+
+
+cat << EOF | sbatch $@
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p molpro$vers
+#SBATCH -J molpro
+#SBATCH -c 1
+export OMP_NUM_THREADS=1
+
+# srun gets confused by CPU binding
+export SLURM_CPU_BIND=none
+
+molpro $extra_opts $inp
+EOF
+

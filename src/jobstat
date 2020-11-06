@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ $# -lt 1 -a -z "$SLURM_JOB_ID" ]; then
+  echo ""
+  echo "Usage: $(basename $0) <slurm jobid>"
+  exit 0
+fi
+
+if [ -z "$SLURM_JOB_ID" ]; then
+  SLURM_JOB_ID=$1
+fi
+
+sacct -a --format="JobID,JobName%20,NCPUS%6,Elapsed,MinCPU,AveCPU,MaxRSS,MaxDiskRead,MaxDiskWrite" --units=G -j $SLURM_JOB_ID
+
+

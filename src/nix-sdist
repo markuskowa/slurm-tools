@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo
+  echo "Usage: $(basename $0) <nix store path>"
+  echo
+  echo "Copy closure to all nodes allocated via slurm."
+  exit
+fi
+
+if [ -z "$SLURM_JOB_ID" ]; then
+  echo "Error: this command can only be run from inside a slurm job" >&2
+  exit 1
+fi
+
+# distribute closure over all MPI nodes
+if [ "$SLURM_NNODES" -gt 1 ]; then
+  for host in $(scontrol show hostnames); do
+      nix-copy-closure --to $host $1
+  done
+fi

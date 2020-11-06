@@ -1,0 +1,23 @@
+#!/bin/sh
+
+
+if [ -f shell.nix ]; then
+  echo "shell.nix already exists. Aborting!"
+  exit 1
+fi
+
+cat > shell.nix << EOF
+with import <nixpkgs> {};
+
+mkShell rec {
+  name = "myEnv";
+  buildInputs = [
+    # place you package list here
+  ];
+
+  shellHook = ''
+    export PS1='\n\[\033[1;34m\][\${name}:\w]\$\[\033[0m\] '
+    # place any shell init code here
+  '';
+}
+EOF

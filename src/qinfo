@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+case "$1" in
+  "-h")
+    echo
+    echo "  Show partition summaries"
+    echo
+    echo "  Usage `basename $0` [-n]"
+    echo
+    exit 0
+    ;;
+  "-n")
+    fmt="%.8n %.14C %.12e"
+    shift
+    ;;
+  *)
+    fmt="%.10R %.11A %.15C %e"
+    ;;
+esac
+
+sinfo -o "$fmt" $@

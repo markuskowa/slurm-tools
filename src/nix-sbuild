@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+if [ "x$SLURM_JOB_ID" == "x" ]; then
+  echo "$(basename $0) must be run in a Slurm environment."
+  exit 1
+fi
+
+if [ -n "$SLURM_CPUS_PER_TASK" ]; then
+  ncores=$SLURM_CPUS_PER_TASK
+else
+  ncores=1
+fi
+
+out=$(nix-build --cores $ncores $@)
+
+
+for i in $out; do
+  nix-copy-closure --to $USER@$SLURM_SUBMIT_HOST $i
+done
