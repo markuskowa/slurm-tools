@@ -33,7 +33,7 @@ done
 
 cat << EOF | sbatch $@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p molpro$vers
+#!nix-shell -i bash -p qchem.molpro$vers
 #SBATCH -J molpro
 #SBATCH -c 1
 export OMP_NUM_THREADS=1
