@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
   echo "Usage: `basename $0` <molpro input> [--mv YY] [--mppx] [sbatch options]"
   echo
   echo "  --mppx: run Molpro in parallel task mode (e.g., for numerical Hessians)"
-  echo "  --mv YY: select a specific version: 20YY"
+  echo "  --mv attribute: select a specific version. e.g. qchem.molpro-ext"
   echo
   exit
 fi
@@ -15,7 +15,9 @@ fi
 inp=$1
 shift
 
-vers=""
+# default attribute
+vers="qchem.molpro"
+
 opts=("--mppx" "--mv")
 extra_opts='--launcher "mpiexec.hydra -np \$SLURM_CPUS_PER_TASK molpro.exe"'
 
@@ -33,7 +35,7 @@ done
 
 cat << EOF | sbatch $@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p qchem.molpro$vers
+#!nix-shell -i bash -p $vers
 #SBATCH -J molpro
 #SBATCH -c 1
 export OMP_NUM_THREADS=1
