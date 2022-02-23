@@ -3,17 +3,18 @@
 if [ -z "$1" ]; then
   echo "Submit Gaussian job to the queue"
   echo ""
-  echo "Usage: `basename $0` <gaussian input> [sbatch options]"
+  echo "Usage: `basename "$0"` <gaussian input> [sbatch options]"
   exit
 fi
 
 inp=$1
 shift
 
-cat << EOF | sbatch $@
+cat << EOF | sbatch "$@"
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p qchem.gaussian
 #SBATCH -J gaussian
+#SBATCH -N 1
 #SBATCH -c 1
 g16 -p=\$SLURM_CPUS_PER_TASK -z=\$TMPDIR/g16.rwf $inp
 EOF
