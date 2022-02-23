@@ -5,4 +5,4 @@ if [ -f shell.nix ]; then
   shell=nix-shell
 fi
 
-srun --pty --cpu-bind=none -J interactive $@ $shell
+srun --pty --cpu-bind=none -J interactive "$@" "$shell"

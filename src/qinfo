@@ -5,7 +5,7 @@ case "$1" in
     echo
     echo "  Show partition summaries"
     echo
-    echo "  Usage `basename $0` [-n]"
+    echo "  Usage $(basename "$0") [-n]"
     echo
     exit 0
     ;;
@@ -18,4 +18,4 @@ case "$1" in
     ;;
 esac
 
-sinfo -o "$fmt" $@
+sinfo -o "$fmt" "$@"

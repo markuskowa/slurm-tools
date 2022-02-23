@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e
 
-if [ "x$SLURM_JOB_ID" == "x" ]; then
-  echo "$(basename $0) must be run in a Slurm environment."
+if [ -z "$SLURM_JOB_ID" ]; then
+  echo "$(basename "$0") must be run in a Slurm environment."
   exit 1
 fi
 
@@ -13,9 +13,9 @@ else
   ncores=1
 fi
 
-out=$(nix-build --cores $ncores $@)
+out=$(nix-build --cores $ncores "$@")
 
 
 for i in $out; do
-  nix-copy-closure --to $USER@$SLURM_SUBMIT_HOST $i
+  nix-copy-closure --to "$USER@$SLURM_SUBMIT_HOST" "$i"
 done

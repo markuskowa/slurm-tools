@@ -1,3 +1,3 @@
 #!/bin/sh
 
-srun --pty --cpu-bind=none -J interactive $@ bash
+srun --pty --cpu-bind=none -J interactive "$@" bash

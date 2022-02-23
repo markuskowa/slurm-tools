@@ -4,10 +4,10 @@ if [ $# -ne 2 ]; then
   echo "Protect store path from garbage collection without installing"
   echo "it the user environment. This will create a link named <label> in ~/gc"
   echo ""
-  echo "Usage: `basename $0` <label> <store path>"
+  echo "Usage: $(basename "$0") <label> <store path>"
   echo
   exit
 fi
 
 mkdir -p ~/gc
-nix-store --add-root ~/gc/$1 --indirect --realize $2
+nix-store --add-root "$HOME/gc/$1" --indirect --realize "$2"

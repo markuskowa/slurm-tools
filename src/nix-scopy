@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]; then
   echo
-  echo "Usage: $(basename $0) <nix store path>"
+  echo "Usage: $(basename "$0") <nix store path>"
   echo
   echo "Copy a nix store path to the local machine"
   echo "either from a nix cache or the host that the"
@@ -11,10 +11,10 @@ if [ -z "$1" ]; then
 fi
 
 if [ -z "$SLURM_SUBMIT_HOST" ]; then
-  nix-store --realise $1
+  nix-store --realise "$1"
 else
-  nix-store --realise $1 2>/dev/null || \
-    nix-copy-closure --from $SLURM_SUBMIT_HOST $1
+  nix-store --realise "$1" 2>/dev/null || \
+    nix-copy-closure --from "$SLURM_SUBMIT_HOST" "$1"
 fi
 
 
