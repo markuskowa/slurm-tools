@@ -19,7 +19,6 @@ shift
 vers="qchem.molpro"
 
 opts=("--mppx" "--mv")
-extra_opts='--launcher "mpiexec.hydra -np \$SLURM_CPUS_PER_TASK molpro.exe"'
 
 for i in ${opts[@]}; do
   if [ "x$1" == "x--mppx" ]; then
@@ -43,6 +42,14 @@ export OMP_NUM_THREADS=1
 # srun gets confused by CPU binding
 export SLURM_CPU_BIND=none
 
-molpro $extra_opts $inp
+molpro_dir=\$(dirname \$(which molpro))
+
+if [ -e \$molpro_dir/mpiexec.hydra ]; then
+  molpro --launcher "mpiexec.hydra -np \$SLURM_CPUS_PER_TASK \$molpro_dir/molpro.exe" $extra_opts $inp
+else
+  molpro --launcher "mpiexec -np \$SLURM_CPUS_PER_TASK \$molpro_dir/molpro.exe" $extra_opts $inp
+fi
+
+
 EOF
 
